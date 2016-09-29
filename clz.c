@@ -1,17 +1,20 @@
 #include <stdlib.h>
+#include <math.h>
 #include "clz.h"
-/*
-uint8_t clz(uint32_t x)
-{
-	// shift upper half down, rest is filled up with 0s 
-	uint16_t upper = (x >> 16); 
-	// mask upper half away
-	uint16_t lower = (x & 0xFFFF);
-	return upper ? clz(upper) : 16 + clz(lower);
-}
-*/
 
-int clz(uint32_t x) {
+int clz_recur(uint32_t x, int size)
+{
+	if(size == 0) return 0; 
+	// shift upper half down, rest is filled up with 0s 
+	uint16_t upper = (x >> size); 
+	// mask upper half away
+	int loc = (int) ceil(log((double)size)/log((double)2));
+	uint16_t lower = (x & TABLE[loc]);
+	return upper ? clz_recur(upper, size/2) : size + clz_recur(lower, size/2);
+}
+
+
+int clz_itera(uint32_t x) {
     int n = 32, c = 16;
     do {
         uint32_t y = x >> c;
@@ -21,7 +24,7 @@ int clz(uint32_t x) {
     return (n - x);
 }
 
-uint8_t clz_Harley(uint32_t x)
+uint32_t clz_Harley(uint32_t x)
 {
     static const uint8_t Table[] = {
       0xFF, 0, 0xFF, 15, 0xFF, 1, 28, 0xFF,
