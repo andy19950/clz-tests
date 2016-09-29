@@ -13,17 +13,26 @@ int main(int argc, char const *argv[])
 
     if (argc < 2) return -1;
 
-    uint32_t N = argv[1];
+    uint32_t N = 0xFF;
     int i, loop = 25;
 
-    // Baseline
+    // Recursize
     clock_gettime(CLOCK_ID, &start);
     for(i = 0; i < loop; i++) {
-        clz(N);
+        clz_recur(N, SIZE);
     }
     clock_gettime(CLOCK_ID, &end);
     printf("%.4f ", (double) ((end.tv_sec - start.tv_sec) +
-           (end.tv_nsec - start.tv_nsec)/ONE_SEC) * 1000000);
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC) * 1000 );
+    
+    // Iteration
+    clock_gettime(CLOCK_ID, &start);
+    for(i = 0; i < loop; i++) {
+        clz_itera(N);
+    }
+    clock_gettime(CLOCK_ID, &end);
+    printf("%.4f ", (double) ((end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC) * 1000 );
 
 
     // OpenMP with 2 threads
@@ -33,7 +42,7 @@ int main(int argc, char const *argv[])
     }
     clock_gettime(CLOCK_ID, &end);
     printf("%.4f\n", (double) ((end.tv_sec - start.tv_sec) +
-           (end.tv_nsec - start.tv_nsec)/ONE_SEC) * 1000000);
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC) * 1000 );
 
 
     return 0;

@@ -6,8 +6,12 @@ int main(int argc, char const *argv[])
     __attribute__((unused)) uint32_t N = 0xFF;
     int zero = 0;
 
-#if defined(CLZ)
-    zero = clz(N);
+#if defined(RECUR)
+    zero = clz_recur(N, SIZE);
+#endif
+
+#if defined(ITERA)
+    zero = clz_itera(N);
 #endif
 
 #if defined(HARLEY)
